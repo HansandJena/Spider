@@ -1,0 +1,66 @@
+from selenium import webdriver 
+import time
+import requests  
+from lxml import etree
+
+#2.引入selenium package, 建立webdriver对象：
+sel = webdriver.Firefox() 
+loginurl = 'http://manager.invest101.com/'  
+
+#3.打开设定的url，并等待response:
+#open the login in page  
+sel.get(loginurl)  
+time.sleep(0)  
+
+#4.通过xpath找到登录框，并填入相应帐号密码，模拟点击登录：
+#sign in the username  
+try:  
+    sel.find_element_by_id("account").send_keys(u"18565138011")  
+    print('user success!')  
+except:  
+    print('user error!')  
+time.sleep(0)  
+
+#sign in the pasword  
+try:  
+    sel.find_element_by_id("password").send_keys(u"123456")  
+    print('pw success!') 
+except:  
+    print('pw error!') 
+time.sleep(0)  
+
+#click to login  
+try:  
+    sel.find_element_by_id("loginBtn").click()  
+    print ('click success!')  
+except:  
+    print ('click error!')  
+time.sleep(2)  
+
+# 5.验证登录成功与否，若currenturl发生变化，则认为登录成功：
+curpage_url = sel.current_url  
+print(curpage_url)  
+
+
+#6.通过对象的方法获取当前访问网站的session  cookie:
+#get the session cookie  
+cookie = [item["name"] + "=" + item["value"] for item in sel.get_cookies()]   
+cookiestr = ';'.join(item for item in cookie)  
+print( cookiestr ) 
+
+time.sleep(3)
+url = 'http://manager.invest101.com/web-manager/admin/estate' 
+sel.get(url)
+time.sleep(5)  
+cookie2 = [item2["name"] + "=" + item2["value"] for item2 in sel.get_cookies()]  
+cookiestr2 = ';'.join(item2 for item2 in cookie2)  
+print( cookiestr2 ) 
+
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0','Cookie':cookiestr2}
+time.sleep(2) 
+res = requests.get(url, headers = headers)  
+sel_1 = etree.HTML(res.text)
+result = {}
+for date in sel_1.xpath('//tbody/tr[position()<=20]'): 
+    result['编号'] = date.xpath('.//td[@style="position: relative;"]/div[1]/span')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+    print(result)
