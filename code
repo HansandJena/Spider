@@ -1,0 +1,56 @@
+import requests  
+from lxml import etree
+import pandas as pd
+
+hea = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0','Cookie':'abtest=0; JSESSIONID=F730C700D32DF3A17B35D5E45B8F766C; _fecdn_=1; __uuid=1489486474017.16; __tlog=1489486474023.28%7C00000000%7CR000000075%7Cs_00_pz1%7CC_c_0002; __session_seq=29; __uv_seq=29; _mscid=C_c_0002; _uuid=CC4FF075FFA8420B34DB461E3A873CB2; Hm_lvt_a2647413544f5a04f00da7eee0d5e200=1489486478,1489486586,1489489209; Hm_lpvt_a2647413544f5a04f00da7eee0d5e200=1489494019; verifycode=892ffae5413b49d4bb1a4bad1baede6e; 5bcc3bd8=549b657c0bb765fbdc51a185ac19e09f; user_name=%E8%94%A1%E6%A1%93; user_id=21e39fe9272d624c6f22e79200b1344f; lt_auth=6uhbM3UCzlX54SPcimAL4qxI2d75VG3NoS8PgxpTgdbuX%2FTq4P%2FmQwOEqrQExBMhx093IcULNbj3%0D%0AMeD4zHND6UATwGmkkoC4teW41WEDSN0wdPyv1%2F2okczVE5R2nSgGzXRjoH0ZwE%2BmtBwqZobqzg%3D%3D%0D%0A; user_kind=0; user_photo=568e466545cef7ae63c5455706a.png; is_lp_user=true; user_vip=0; __nnn_bad_na_=aea7fa74f3de85289b600a7fcb0dccc8; login_temp=islogin; em_username=4013699880z2307954313; em_token=YWMtHCD34AifEeeItOeaW8dTak8TxtBqMxHkgus5YKfC9XFXFWCatS4R5ZPfzyp_etDfAwMAAAFazFCAmwBPGgBPSVbDV4lLKO8TWSUbYqu-o_J8fClkQhzFk7vURyShOw'}
+
+star_url = 'https://www.liepin.com/zhaopin/?pubTime=30&jobTitles=140160,140040,140152&compkind=&fromSearchBtn=2&ckid=14e501ec8c29624f&isAnalysis=&init=-1&searchType=1&dqs=050090&industryType=&jobKind=&sortFlag=11&industries=&salary=*&compscale=&key=&clean_condition=&headckid=bfa521d201114790&curPage={}'  
+
+list_total = []
+
+def get_url(star_url):
+    sum = 0 #计数
+    list_total = []
+    for y in range(0,33):  #  待修改为  for y in range(0,33):
+        url = star_url.format(y)
+        r = requests.get(url, headers = hea)  
+        sel = etree.HTML(r.text)
+        for date in sel.xpath('//ul[@class="sojob-list"]/li[position()<=40]'):   #  待修改为 for date in sel.xpath('//ul[@class="sojob-list"]/li[position()<=last()]'):
+            try:
+                result = {}
+                sum = sum + 1 #计数
+                result['岗位'] = date.xpath('.//span[@class="job-name"]/a/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['网址'] = date.xpath('.//span[@class="job-name"]/a/@href')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['时间'] = date.xpath('.//p[@class="time-info clearfix"]/time/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                #进入二级网页
+                url_1 = result['网址']   #进入二级网页
+                r_1 = requests.get(url_1, headers = hea)  
+                sel_1 = etree.HTML(r_1.text)
+                result['工资'] = sel_1.xpath('//p[@class="job-item-title"]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['学历'] = sel_1.xpath('//div[@class="job-qualifications"]/span[1]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['经验'] = sel_1.xpath('//div[@class="job-qualifications"]/span[2]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['语言'] = sel_1.xpath('//div[@class="job-qualifications"]/span[3]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['年龄'] = sel_1.xpath('//div[@class="job-qualifications"]/span[4]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['公司名'] = sel_1.xpath('//div[@class="company-infor"]//a[1]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['行业'] = sel_1.xpath('//div[@class="company-infor"]//li[1]')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['规模'] = sel_1.xpath('//div[@class="company-infor"]//li[position()=last()-1]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['性质'] = sel_1.xpath('//div[@class="company-infor"]//li[last()]')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['地址'] = sel_1.xpath('//div[@class="company-infor"]/p')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['所属部门'] = sel_1.xpath('//div[@class="about-position"]/div[4]//div[@class="content"]//li[1]//label[1]')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['专业要求'] = sel_1.xpath('//div[@class="about-position"]/div[4]//div[@class="content"]//li[2]//label[1]')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                result['公司简介'] = sel_1.xpath('//div[@class="job-item main-message noborder"]//div[@class="content content-word"]')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','').replace('\xa0','')
+                result['岗位描述'] = sel_1.xpath('//div[@class="about-position"]/div[3]//div[@class="content content-word"]')[0].xpath('string(.)').replace('\n','').replace('\t','').replace('\r','').replace(' ','').replace('\xa0','')
+#                print(sum)
+#                print(result)
+                list_total.append(result) 
+#                print(sum,end = '' )
+                print('正在下载：'+ str(sum) + '、' + result['岗位'] )
+            except:
+                continue
+#    print(list_total)
+    df = pd.DataFrame(list_total)    
+#    print(df)
+    df.to_csv('liepin.csv')    #输出为liepin.csv文件
+    print('******************爬虫结束啦******************')
+
+get_url(star_url)  #函数启动器
