@@ -1,0 +1,27 @@
+from selenium import webdriver
+import time
+import requests 
+
+#定义————selenium利用cookie直接登陆
+browser = webdriver.Firefox()
+browser.get("http://manager.invest101.com/")
+time.sleep(0)
+
+#通过cookie登陆101后台
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0','Cookie':'admin_id=vBnZzt3J;admin_name=Benjamin'}
+url = 'http://manager.invest101.com/web-manager/admin/estate'
+
+# 添加cookie信息
+browser.add_cookie({'name': 'admin_id', 'value': 'vBnZzt3J'})
+browser.add_cookie({'name': 'admin_name', 'value': 'Benjamin'})
+time.sleep(1)
+
+# 刷新页面
+browser.refresh()
+
+time.sleep(1)
+browser.get("http://manager.invest101.com/web-manager/admin/estate")
+
+# 获得并打印cookie信息
+cookie= browser.get_cookies()
+print(cookie)
