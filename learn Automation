@@ -30,3 +30,28 @@ browser.add_cookie({'name': 'BD_UPN', 'value': '13314752'})
 browser.add_cookie({'name': '__bsi', 'value': '16985087065854400043_00_0_I_R_1_0303_C02F_N_I_I_0'})
 browser.add_cookie({'name': 'BIDUPSID', 'value': '10A6CA667713A47CE84FC0055B2A8B36'})
 browser.add_cookie({'name': 'BDORZ', 'value': 'B490B5EBF6F3CD402E515D22BCDA1598'})
+
+
+
+
+
+from selenium import webdriver
+import time
+
+#打开百度————利用selenium登陆
+browser = webdriver.Firefox()
+browser.get("https://www.baidu.com/")
+time.sleep(2)
+#利用cookie直接登陆
+browser.add_cookie({'name': 'BAIDUID', 'value': 'D73E1CEB670D8DB5398F0E0EB1C93B83:FG=1'})
+browser.add_cookie({'name': 'PSTM', 'value': '1489740016'})
+browser.add_cookie({'name': 'BD_HOME', 'value': '0'})
+browser.add_cookie({'name': 'H_PS_PSSID', 'value': '1436_21108_17001_22036_21671'})
+browser.add_cookie({'name': 'BD_UPN', 'value': '13314752'})
+browser.add_cookie({'name': '__bsi', 'value': '16985087065854400043_00_0_I_R_1_0303_C02F_N_I_I_0'})
+browser.add_cookie({'name': 'BIDUPSID', 'value': '10A6CA667713A47CE84FC0055B2A8B36'})
+browser.add_cookie({'name': 'BDORZ', 'value': 'B490B5EBF6F3CD402E515D22BCDA1598'})
+# 刷新页面
+time.sleep(2)
+browser.refresh()
+browser.get("https://www.baidu.com/")
