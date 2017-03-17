@@ -22,14 +22,7 @@ cookie= browser.get_cookies()
 print(cookie)
 now_url = browser.current_url
 print(now_url)
-#利用cookie直接登陆
-browser.add_cookie({'name': 'BAIDUID', 'value': 'D73E1CEB670D8DB5398F0E0EB1C93B83:FG=1'})
-browser.add_cookie({'name': 'PSTM', 'value': '1489740016'})
-browser.add_cookie({'name': 'BD_HOME', 'value': '0'})
-browser.add_cookie({'name': 'BD_UPN', 'value': '13314752'})
-browser.add_cookie({'name': '__bsi', 'value': '16985087065854400043_00_0_I_R_1_0303_C02F_N_I_I_0'})
-browser.add_cookie({'name': 'BIDUPSID', 'value': '10A6CA667713A47CE84FC0055B2A8B36'})
-browser.add_cookie({'name': 'BDORZ', 'value': 'B490B5EBF6F3CD402E515D22BCDA1598'})
+
 
 
 
