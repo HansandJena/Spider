@@ -1,6 +1,5 @@
 from selenium import webdriver
 import time
-import requests 
 
 #定义————selenium利用cookie直接登陆
 browser = webdriver.Firefox()
