@@ -1,0 +1,44 @@
+from selenium import webdriver
+import time
+import pandas as pd
+
+#登陆101后台
+browser = webdriver.Firefox()
+browser.get("http://manager.invest101.com/")
+#通过id方式定位
+time.sleep(2)
+browser.find_element_by_id("account").send_keys(u"18565138011")  
+browser.find_element_by_id("password").send_keys(u"123456")
+browser.find_element_by_id("loginBtn").click()
+time.sleep(2)
+browser.get("http://manager.invest101.com/web-manager/admin/estate/")
+time.sleep(1)
+
+#def get_url(star_url):
+sum = 0 #计数
+list_total = []
+for y in range(1,96):  #  待修改为  for y in range(0,96): 
+    for i in range(1,21):   #  待修改为     xpath中加入变量   tr[position() = '" +str(i) + "']
+        try:
+            result = {}
+            sum = sum + 1 #计数
+            result['公司名'] = browser.find_element_by_xpath("//tbody/tr[position() = '" +str(i) + "']/td[3]/h5/a").text.replace(' ','')
+            result['编号'] = browser.find_element_by_xpath("//tbody/tr[position() = '" +str(i) + "']/td[3]/div[1]/span").text.lstrip('编号：').replace(' ','')
+            result['区域'] = browser.find_element_by_xpath("//tbody/tr[position() = '" +str(i) + "']/td[3]/div[2]/span[1]").text.lstrip('区域：').replace(' ','')
+            result['地址'] = browser.find_element_by_xpath("//tbody/tr[position() = '" +str(i) + "']/td[3]/div[2]/span[2]").text.lstrip('地址：').replace(' ','')
+            result['租售方式'] = browser.find_element_by_xpath("//tbody/tr[position() = '" +str(i) + "']/td[3]/div[3]/span").text.lstrip('租售方式：').replace(' ','')
+            result['租售面积'] = browser.find_element_by_xpath("//tbody/tr[position() = '" +str(i) + "']/td[3]/div[4]/span/span").text.replace(' ','')
+            result['物业类型'] = browser.find_element_by_xpath("//tbody/tr[position() = '" +str(i) + "']/td[3]/div[5]/span").text.lstrip('物业类型：').replace(' ','')
+#            print(sum)
+#            print(result)
+            list_total.append(result) 
+            print('正在下载：'+ str(sum) + '、' + result['公司名'] )
+        except:
+            continue
+    browser.find_element_by_xpath('//a[@aria-label = "下一页"]').click()
+    time.sleep(2)
+df = pd.DataFrame(list_total)    
+#    print(df)
+df.to_csv('invest.csv')    #输出为invest.csv文件
+print('******************爬虫结束啦******************')
+#get_url(star_url)  #函数启动器
