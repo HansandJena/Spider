@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+#-*- coding:utf-8 -*-
+import requests
+import pandas as pd
+
+df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
+for i in range(0,len(df[u'名称'])):   #for i in range(0,len(df[u'名称'])):
+    address = "广州市增城区" + df[u'地址'][i]
+    print(address)
+    par = {'address': address, 'key': 'cb649a25c1f81c1451adbeca73623251'}
+    base = 'http://restapi.amap.com/v3/geocode/geo'
+    response = requests.get(base, par)
+    answer = response.json()
+    GPS=answer['geocodes'][0]['location'].split(",")
+    print(GPS[0] +','+ GPS[1])
+    df[u'编号'][i] = GPS[0]
+    df[u'后台状态'][i] = GPS[0]
+    df.to_csv('invest临时文件.csv')
+
+
+
+
+
+
+
+'''
+利用高德地图或百度地图api实现地址和经纬度的转换
+
+import requests
+import pandas as pd
+
+#使用高德API
+def geocodeG(address):
+    par = {'address': address, 'key': 'cb649a25c1f81c1451adbeca73623251'}
+    base = 'http://restapi.amap.com/v3/geocode/geo'
+    response = requests.get(base, par)
+    answer = response.json()
+    GPS=answer['geocodes'][0]['location'].split(",")
+    print(GPS[0] +','+ GPS[1])
+    
+    return GPS[0],GPS[1]
+
+df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
+
+for i in range(0,5):   #for i in range(0,len(df[u'名称'])):
+    address = "广州市增城区" + df[u'地址'][i]
+    print(address)
+    geocodeG(address)
+    print(GPS[0])
+'''
