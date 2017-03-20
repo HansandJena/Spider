@@ -4,6 +4,32 @@ import requests
 import pandas as pd
 
 df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
+
+def map_api(address):
+    par = {'address': address, 'key': 'cb649a25c1f81c1451adbeca73623251'}
+    base = 'http://restapi.amap.com/v3/geocode/geo'
+    response = requests.get(base, par)
+    answer = response.json()
+    GPS=answer['geocodes'][0]['location'].split(",")
+    return GPS[0], GPS[1]
+
+if __name__ == "__main__":
+    for i in range(0,len(df[u'名称'])):   #for i in range(0,len(df[u'名称'])):
+        address = "广州市增城区" + df[u'地址'][i]
+        print(address)
+        map_api(address)
+        print(GPS[0] +','+ GPS[1])
+
+
+
+
+
+
+
+import requests
+import pandas as pd
+
+df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
 for i in range(0,len(df[u'名称'])):   #for i in range(0,len(df[u'名称'])):
     address = "广州市增城区" + df[u'地址'][i]
     print(address)
