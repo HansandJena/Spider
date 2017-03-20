@@ -1,0 +1,73 @@
+import pandas as pd
+from selenium import webdriver
+import time
+import re
+
+#定义————selenium利用cookie直接登陆
+browser = webdriver.Firefox()
+browser.get("http://manager.invest101.com/")
+time.sleep(0)
+# 添加cookie信息
+browser.add_cookie({'name': 'admin_id', 'value': 'vBnZzt3J'})
+browser.add_cookie({'name': 'admin_name', 'value': 'Benjamin'})
+time.sleep(1)
+# 刷新页面
+browser.refresh()
+time.sleep(1)
+browser.get("http://manager.invest101.com/web-manager/admin/estate")
+
+df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
+
+def have_it():  #
+    print('存在该园区')
+    
+def no_it():  #
+    print('不存在该园区')
+    
+def no_it_yuan():
+    print('物业类型为园')
+    
+def no_it_dong():
+    print('物业类型为栋')
+    
+def no_it_di():
+    print('物业类型为地')
+
+def go_go():
+    if df[u'类型'][i] == '园':
+        no_it_yuan()
+    elif df[u'类型'][i] == '栋':
+        no_it_dong()
+    elif df[u'类型'][i] == '地':
+        no_it_di()  
+
+for i in range(0,1):   #for i in range(0,len(df[u'名称'])): 
+    browser.find_element_by_xpath("//*[@class = 'form-control']").send_keys(df[u'名称'][i])
+    browser.find_element_by_xpath("//*[@class = 'btn btn-primary']").click()
+    time.sleep(1)
+    company = browser.find_element_by_xpath("//tbody/tr[1]/td[3]/h5/a").text.replace('\s','')
+    print(company)
+    if company == df[u'名称'][i] :
+        have_it()
+        if df[u'类型'][i] in browser.find_element_by_xpath("//tbody/tr[1]/td[3]/span").text.replace('\s',''):
+            print("该物业类型无误")
+            browser.find_element_by_xpath("//tbody/tr[1]/td[5]/div[1]/a").click()
+            time.sleep(2)
+            go_go()
+        else:    
+            print("该物业类型有误")
+            the_number_1 = browser.find_element_by_xpath("//tbody/tr[1]/td[3]/div[1]/span").text.lstrip('编号：').replace(' ','')
+            print(the_number_1)
+            df[u'编号'][i] = browser.find_element_by_xpath("//tbody/tr[1]/td[3]/div[1]/span").text.lstrip('编号：').replace(' ','')
+            df[u'后台状态'][i] = '园区为楼栋' 
+    else:
+        no_it()
+        go_go()
+         
+
+
+        
+
+#print(df[u'名称'][i])
+#print(len(df[u'名称']))
+print('任务完成啦'.center(60, '*'))
