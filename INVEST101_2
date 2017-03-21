@@ -3,18 +3,6 @@ from selenium import webdriver
 import time
 import re
 
-#定义————selenium利用cookie直接登陆
-browser = webdriver.Firefox()
-browser.get("http://manager.invest101.com/")
-time.sleep(0)
-# 添加cookie信息
-browser.add_cookie({'name': 'admin_id', 'value': 'vBnZzt3J'})
-browser.add_cookie({'name': 'admin_name', 'value': 'Benjamin'})
-time.sleep(1)
-# 刷新页面
-browser.refresh()
-time.sleep(1)
-browser.get("http://manager.invest101.com/web-manager/admin/estate")
 
 def have_it():  #
     print('存在该园区')
@@ -27,6 +15,29 @@ def no_it_yuan():
     
 def no_it_dong():
     print('物业类型为栋')
+    browser.get("http://manager.invest101.com/web-manager/admin/addBuilding")
+    time.sleep(1)
+    browser.find_element_by_xpath("//input[@id = 'estateName']").clear()
+    browser.find_element_by_xpath("//input[@id = 'estateName']").send_keys(df[u'名称'][i])   #输入载体名称
+    browser.find_element_by_xpath("//body/section/section/div/div/div/div/table[2]/tbody/tr[3]/td[2]/button").click()  #点击所属园区
+    time.sleep(1)
+    browser.find_element_by_xpath('//*[@id="parkKeyWord"]').clear()
+    browser.find_element_by_xpath('//*[@id="parkKeyWord"]').send_keys(df[u'名称'][i][ : -4])  #输入载体名称关键字园区名称
+    browser.find_element_by_xpath("//body/div[1]/div/div/div[2]/form/div[1]/div[3]/button").click()  #点击搜索
+    time.sleep(1)
+    browser.find_element_by_xpath('//*[@id="parkSelect"]').click()  #点击选择
+    browser.find_element_by_xpath('//*[@id="parkSelect"]/option[2]').click()  #点击选择
+    browser.find_element_by_xpath("//body/div[1]/div/div/div[3]/button[2]").click()  #点击确定
+    time.sleep(1)
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[2]/td[2]/label[2]/input').click()  #点击建筑面积
+    browser.find_element_by_xpath('//*[@id="buildingArea"]').clear()
+    browser.find_element_by_xpath('//*[@id="buildingArea"]').send_keys(df[u'建筑面积'][i])  #输入建筑面积
+    time.sleep(1)
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[16]/td[2]/label[2]/input').click()  #点击总楼层
+    browser.find_element_by_xpath('//*[@id="floorCount"]').clear()
+    browser.find_element_by_xpath('//*[@id="floorCount"]').send_keys(df[u'总楼层'][i])  #输入总楼层
+    
+
     
 def no_it_di():
     print('物业类型为地')
@@ -39,14 +50,39 @@ def go_go():
     elif df[u'类型'][i] == '地':
         no_it_di()  
 
+        
+#定义————selenium利用cookie直接登陆
+browser = webdriver.Firefox()
+browser.get("http://manager.invest101.com/")
+time.sleep(0)
+# 添加cookie信息
+browser.add_cookie({'name': 'admin_id', 'value': 'vBnZzt3J'})
+browser.add_cookie({'name': 'admin_name', 'value': 'Benjamin'})
+time.sleep(1)
+# 刷新页面
+browser.refresh()
+time.sleep(1)
+browser.get("http://manager.invest101.com/web-manager/admin/estate")
+time.sleep(1) 
+
+
 if __name__ == "__main__":
+
     
     df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
     
-    for i in range(0,6):   #for i in range(0,len(df[u'名称'])): 
-        browser.get("http://manager.invest101.com/web-manager/admin/estate")
-        time.sleep(1)
+    for i in range(83,84):   #  for i in range(0,len(df[u'名称'])):    for i in range(46,84):
+        if df[u'类型'][i] == '栋':
+            print(df[u'名称'][i])
+            no_it_dong()
+            print(i)
+            
+            break
+            
+ 
         
+        
+"""
         browser.find_element_by_xpath("//*[@class = 'form-control']").send_keys(df[u'名称'][i])
         browser.find_element_by_xpath("//*[@class = 'btn btn-primary']").click()
         time.sleep(1)
@@ -70,7 +106,7 @@ if __name__ == "__main__":
             no_it()
             go_go()
          
-
+"""
 
         
 
