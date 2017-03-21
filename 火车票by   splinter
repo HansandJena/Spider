@@ -1,0 +1,37 @@
+from splinter import Browser
+import time
+
+b = Browser(driver_name="firefox")
+url = 'https://kyfw.12306.cn/otn/leftTicket/init'
+b.visit(url)
+time.sleep(3)
+b.find_by_text(u"登录").click()
+time.sleep(3)
+b.fill("loginUserDTO.user_name","xxxx")
+b.fill("userDTO.password","xxxx")
+
+
+
+b.cookies.all()
+{u'BIGipServerotn': u'1977155850.38945.0000',
+u'JSESSIONID': u'0A01D97598F459F751C4AE8518DBFB300DA7001B67',
+u'__NRF': u'95D48FC2E0E15920BFB61C7A330FF2AE',
+u'_jc_save_fromDate': u'2016-01-20',
+u'_jc_save_fromStation': u'%u4E0A%u6D77%2CSHH',
+u'_jc_save_toStation': u'%u6C38%u5DDE%2CAOQ',
+u'current_captcha_type': u'Z'}
+
+
+
+
+b.visit(url)
+b.cookies.add({"_jc_save_fromDate":"2017-03-26"})
+b.cookies.add({"_jc_save_fromStation":"%u5E7F%u5DDE%2CGZQ"})
+b.cookies.add({u'_jc_save_toStation':'%u5408%u80A5%2CHFH'})
+b.reload()
+b.find_by_text(u"查询").click()
+
+
+
+time.sleep(12)
+b.quit()
