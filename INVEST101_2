@@ -10,10 +10,26 @@ def no_it():  #
     print('不存在该园区')
     
 def write_yuan():
-    print('物业类型为园')
-    browser.get("http://manager.invest101.com/web-manager/admin/addPark")
-    time.sleep(2)
     
+    browser.get("http://manager.invest101.com/web-manager/admin/addPark")
+    time.sleep(1)
+    
+    print(df[u'区域'][i])
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[2]/tbody/tr[3]/td[2]/form/div[2]/select').click()  #点击选择
+    time.sleep(0.5)
+    browser.find_element_by_xpath('//*[@value= "广州市"]').click()  #点击选择
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[2]/tbody/tr[3]/td[2]/form/div[3]/select[1]').click()  #点击选择
+    time.sleep(0.5)
+    browser.find_element_by_xpath('//*[@value= "增城区"]').click()  #点击选择
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[2]/tbody/tr[3]/td[2]/form/div[4]/select[3]').click()  #点击选择
+    time.sleep(0.5)
+    try:
+        browser.find_element_by_xpath("//*[@value= '" + str(df[u'区域'][i]) + "']").click()  #点击选择
+    except:
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[2]/tbody/tr[3]/td[2]/form/div[3]/select[1]/option[-1]').click()  #点击选择
+    time.sleep(1)
+
+
     
 def write_dong():
     print('物业类型为栋')
@@ -173,7 +189,6 @@ if __name__ == "__main__":
 #print(df[u'名称'][i])
 #print(len(df[u'名称']))
 print('任务完成啦'.center(60, '*'))
-
 
 
 
