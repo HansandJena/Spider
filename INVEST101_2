@@ -11,7 +11,10 @@ def no_it():  #
     
 def write_yuan():
     print('物业类型为园')
-
+    browser.get("http://manager.invest101.com/web-manager/admin/addPark")
+    time.sleep(2)
+    
+    
 def write_dong():
     print('物业类型为栋')
     browser.get("http://manager.invest101.com/web-manager/admin/addBuilding")
@@ -122,7 +125,7 @@ time.sleep(1)
 
 if __name__ == "__main__":
     df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
-    for i in range(80,81):   #  for i in range(0,len(df[u'名称'])):    for i in range(46,84):
+    for i in range(78,82):   #  for i in range(0,len(df[u'名称'])):    for i in range(46,84):
         if df[u'类型'][i] == '栋':
             print("正在进行第" + str(i) + "项")
             write_dong()
@@ -130,6 +133,8 @@ if __name__ == "__main__":
             print("正在进行第" + str(i) + "项")
             write_yuan()
         else:
+            print("正在进行第" + str(i) + "项")
+            print('该项不录入')
             pass
     
 
@@ -168,7 +173,6 @@ if __name__ == "__main__":
 #print(df[u'名称'][i])
 #print(len(df[u'名称']))
 print('任务完成啦'.center(60, '*'))
-
 
 
 
