@@ -2,14 +2,16 @@ if __name__ == "__main__":   #定义主程序
 
 
 def map_api(address):    #通过高德地图API取得所输入地址的————经度GPS[0], 维度GPS[1]  ————import requests
-    par = {'address': address, 'key': 'cb649a25c1f81c1451adbeca73623251'}
+    par = {'address': address, 'key': 'cb649a25c1f81c1451adbeca73623251'}   #或者key = 66259e505337e924c0885c0a4fc32890
     base = 'http://restapi.amap.com/v3/geocode/geo'
     response = requests.get(base, par)
     answer = response.json()
     global GPS   #将GPS设置为全局变量
     GPS=answer['geocodes'][0]['location'].split(",")     #.split(",")为将字符串按","切分为列表
+    # print(GPS[0] +','+ GPS[1]) 
+    # url = "http://ditu.amap.com/regeo?lng="+ GPS[0] + "&lat=" + GPS[1]  #根据GPS打开地图
     
-def open_url(url):     #打开url
+def open_url(url):     #打开url    from selenium import webdriver    import time
     global browser
     browser = webdriver.Firefox()
     browser.get(url)
