@@ -3,6 +3,203 @@ from selenium import webdriver
 import time
 import re
 
+def have_it():  #
+    print('存在该园区')
+    
+def no_it():  #
+    print('不存在该园区')
+    
+def write_yuan():
+    print('物业类型为园')
+
+def write_dong():
+    print('物业类型为栋')
+    browser.get("http://manager.invest101.com/web-manager/admin/addBuilding")
+    time.sleep(0.5)
+    
+    print(df[u'名称'][i])
+    browser.find_element_by_xpath("//input[@id = 'estateName']").clear()
+    browser.find_element_by_xpath("//input[@id = 'estateName']").send_keys(str(df[u'名称'][i]))   #输入载体名称
+    browser.find_element_by_xpath("//body/section/section/div/div/div/div/table[2]/tbody/tr[3]/td[2]/button").click()  #点击所属园区
+    time.sleep(0.5)
+    browser.find_element_by_xpath('//*[@id="parkKeyWord"]').clear()
+    browser.find_element_by_xpath('//*[@id="parkKeyWord"]').send_keys(str(df[u'名称'][i][ : -4]))  #输入载体名称关键字园区名称
+    browser.find_element_by_xpath("//body/div[1]/div/div/div[2]/form/div[1]/div[3]/button").click()  #点击搜索
+    time.sleep(1)
+    browser.find_element_by_xpath('//*[@id="parkSelect"]').click()  #点击选择
+    browser.find_element_by_xpath('//*[@id="parkSelect"]/option[2]').click()  #点击选择
+    browser.find_element_by_xpath("//body/div[1]/div/div/div[3]/button[2]").click()  #点击确定
+    time.sleep(0.5) 
+    
+    print(df[u'规划用途'][i])
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[3]/tbody/tr[1]/td[2]/label[1]/input').click()
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[3]/tbody/tr[1]/td[2]/label[2]/input').click()
+    browser.find_element_by_xpath("//*[@value= '" + str(df[u'规划用途'][i]) + "']").click()
+    time.sleep(0.5) 
+    
+    print(df[u'租售方式'][i])
+    for zsfs in df[u'租售方式'][i].split(r"、"):   #遍历租售方式zsfs
+        browser.find_element_by_xpath("//*[@value= '" + str(zsfs) + "']").click()
+    time.sleep(0.5) 
+    
+    print(df[u'当前租售状态'][i])
+    browser.find_element_by_xpath("//*[@value= '" + str(df[u'当前租售状态'][i]) + "']").click()  
+    time.sleep(0.5)
+    
+    print(df[u'出租面积'][i])
+    czmj = df[u'出租面积'][i]  if not pd.isnull(df[u'建筑结构'][i]) or float(df[u'出租面积'][i]) >= 1 else 1   #定义出租面积变量czmj
+    browser.find_element_by_xpath('//*[@id="saleAndRentAreaValue"]').clear()  
+    browser.find_element_by_xpath('//*[@id="saleAndRentAreaValue"]').send_keys(str(czmj))  #输入出租面积  
+    browser.find_element_by_xpath('//*[@id="saleAndRentAreaMaxValue"]').clear()
+    browser.find_element_by_xpath('//*[@id="saleAndRentAreaMaxValue"]').send_keys(str(czmj))  #输入出租面积
+    time.sleep(0.5)
+    
+    print(df[u'租金'][i])
+    if not pd.isnull(df[u'租金'][i]) or float(df[u'租金'][i]) >= 1 :
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[3]/tbody/tr[6]/td[2]/label[3]/input').click()  #点击总楼层
+        browser.find_element_by_xpath('//*[@id="rentPrice"]').clear()
+        browser.find_element_by_xpath('//*[@id="rentPrice"]').send_keys(str(df[u'租金'][i]))  #输入总楼层
+    else:
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[3]/tbody/tr[6]/td[2]/label[1]/input').click()  #采集不到总楼层
+    
+    #采集不到入驻企业数量
+    browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[13]/td[2]/label[1]/input').click()
+    time.sleep(0.5)
+    
+    print(df[u'建筑结构'][i])
+    if pd.isnull(df[u'建筑结构'][i]):
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[15]/td[2]/label[1]').click()  #点击采集不到建筑结构     
+    else:
+        browser.find_element_by_xpath("//*[@value= '" + str(df[u'建筑结构'][i]) + "']").click()
+    time.sleep(0.5)
+    
+    print(df[u'建筑面积'][i])
+    if float(df[u'建筑面积'][i]) >= 1 :
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[2]/td[2]/label[2]/input').click()  #点击建筑面积
+        browser.find_element_by_xpath('//*[@id="buildingArea"]').clear()
+        browser.find_element_by_xpath('//*[@id="buildingArea"]').send_keys(str(df[u'建筑面积'][i]))  #输入建筑面积
+    else:
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[2]/td[2]/label[1]/input').click()  #点击采集不到建筑面积
+    time.sleep(0.5)
+    
+    print(df[u'总楼层'][i])
+    if float(df[u'总楼层'][i]) >= 1 :
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[16]/td[2]/label[2]/input').click()  #点击总楼层
+        browser.find_element_by_xpath('//*[@id="floorCount"]').clear()
+        browser.find_element_by_xpath('//*[@id="floorCount"]').send_keys(str(df[u'总楼层'][i]))  #输入总楼层
+    else:
+        browser.find_element_by_xpath('//body/section/section/div/div/div/div/table[4]/tbody/tr[16]/td[2]/label[1]/input').click()  #采集不到总楼层
+            
+#    browser.find_element_by_xpath("//*[@id="addBtn"]").click()  # 保存
+    time.sleep(3)    
+    
+def no_it_di():
+    print('物业类型为地')
+
+def go_go():
+    if df[u'类型'][i] == '园':
+        no_it_yuan()
+    elif df[u'类型'][i] == '栋':
+        no_it_dong()
+    elif df[u'类型'][i] == '地':
+        no_it_di()  
+
+        
+#定义————selenium利用cookie直接登陆
+browser = webdriver.Firefox()
+browser.get("http://manager.invest101.com/")
+time.sleep(0)
+# 添加cookie信息
+browser.add_cookie({'name': 'admin_id', 'value': 'vBnZzt3J'})
+browser.add_cookie({'name': 'admin_name', 'value': 'Benjamin'})
+time.sleep(1)
+# 刷新页面
+browser.refresh()
+time.sleep(1)
+browser.get("http://manager.invest101.com/web-manager/admin/estate")
+time.sleep(1) 
+
+
+if __name__ == "__main__":
+    df = pd.read_excel(r"D:\\Python\\test\\【广州东莞】物业汇总表 20170321.xlsx",header=0,sheetname = '增城区')
+    for i in range(80,81):   #  for i in range(0,len(df[u'名称'])):    for i in range(46,84):
+        if df[u'类型'][i] == '栋':
+            print("正在进行第" + str(i) + "项")
+            write_dong()
+        elif df[u'类型'][i] == '园':
+            print("正在进行第" + str(i) + "项")
+            write_yuan()
+        else:
+            pass
+    
+
+            
+ 
+        
+        
+"""
+        browser.find_element_by_xpath("//*[@class = 'form-control']").send_keys(df[u'名称'][i])
+        browser.find_element_by_xpath("//*[@class = 'btn btn-primary']").click()
+        time.sleep(1)
+        
+        company = browser.find_element_by_xpath("//tbody/tr[1]/td[3]/h5/a").text.replace('\s','')
+        print(company)
+        if company == df[u'名称'][i] :
+            have_it()
+            if df[u'类型'][i] in browser.find_element_by_xpath("//tbody/tr[1]/td[3]/span").text.replace('\s',''):
+                print("该物业类型无误")
+                browser.find_element_by_xpath("//tbody/tr[1]/td[5]/div[1]/a").click()
+                time.sleep(2)
+                go_go()
+            else:    
+                print("该物业类型有误")
+                the_number_1 = browser.find_element_by_xpath("//tbody/tr[1]/td[3]/div[1]/span").text.lstrip('编号：').replace(' ','')
+                print(the_number_1)
+                df[u'编号'][i] = browser.find_element_by_xpath("//tbody/tr[1]/td[3]/div[1]/span").text.lstrip('编号：').replace(' ','')
+                df[u'后台状态'][i] = '园区为楼栋' 
+        else:
+            no_it()
+            go_go()
+         
+"""
+
+        
+
+#print(df[u'名称'][i])
+#print(len(df[u'名称']))
+print('任务完成啦'.center(60, '*'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import pandas as pd
+from selenium import webdriver
+import time
+import re
+
 
 def have_it():  #
     print('存在该园区')
