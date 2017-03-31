@@ -78,6 +78,7 @@ if __name__ == "__main__":
         get_a()
         #browser.implicitly_wait(1) # 隐性等待，最长等30秒      
         WebDriverWait(browser, 2).until(lambda browser: browser.find_element_by_xpath("//body/form/table/tbody/tr/td[3]/a")).click()  # 显性等待，最长等待2秒 
+        time.sleep(1)
         
 #    df = pd.DataFrame(list_total)    
 #    df.to_csv('tianyancha.csv')    #输出为invest.csv文件
