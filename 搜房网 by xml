@@ -117,3 +117,18 @@ dict_y = {"71":"荔湾区","72":"越秀区","73":"天河区","74":"海珠区","7
 for key in dict_y.keys():
     print(key)
     print(dict_y[key])
+
+
+
+
+
+small = 800
+large = 1200
+
+star_url = 'http://office.gz.fang.com/zu/house-a0{}/j2' + str(small) +'-k2' + str(large) +'-j330-l3010/'
+
+dict_y = {"71":"荔湾区","72":"越秀区","73":"天河区","74":"海珠区","75":"黄埔区","78":"番禺区"}
+
+for key in dict_y.keys():   #for y in range(71,72):  #  {71:荔湾区,72:越秀区,73:天河区,74:海珠区,75:黄埔区,78:番禺区}
+    url = star_url.format(key)
+    print(url)
