@@ -1,6 +1,7 @@
 import requests  
 from lxml import etree
 import pandas as pd
+#  import time
 
 hea = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0','Cookie':'abtest=0; JSESSIONID=F730C700D32DF3A17B35D5E45B8F766C; _fecdn_=1; __uuid=1489486474017.16; __tlog=1489486474023.28%7C00000000%7CR000000075%7Cs_00_pz1%7CC_c_0002; __session_seq=29; __uv_seq=29; _mscid=C_c_0002; _uuid=CC4FF075FFA8420B34DB461E3A873CB2; Hm_lvt_a2647413544f5a04f00da7eee0d5e200=1489486478,1489486586,1489489209; Hm_lpvt_a2647413544f5a04f00da7eee0d5e200=1489494019; verifycode=892ffae5413b49d4bb1a4bad1baede6e; 5bcc3bd8=549b657c0bb765fbdc51a185ac19e09f; user_name=%E8%94%A1%E6%A1%93; user_id=21e39fe9272d624c6f22e79200b1344f; lt_auth=6uhbM3UCzlX54SPcimAL4qxI2d75VG3NoS8PgxpTgdbuX%2FTq4P%2FmQwOEqrQExBMhx093IcULNbj3%0D%0AMeD4zHND6UATwGmkkoC4teW41WEDSN0wdPyv1%2F2okczVE5R2nSgGzXRjoH0ZwE%2BmtBwqZobqzg%3D%3D%0D%0A; user_kind=0; user_photo=568e466545cef7ae63c5455706a.png; is_lp_user=true; user_vip=0; __nnn_bad_na_=aea7fa74f3de85289b600a7fcb0dccc8; login_temp=islogin; em_username=4013699880z2307954313; em_token=YWMtHCD34AifEeeItOeaW8dTak8TxtBqMxHkgus5YKfC9XFXFWCatS4R5ZPfzyp_etDfAwMAAAFazFCAmwBPGgBPSVbDV4lLKO8TWSUbYqu-o_J8fClkQhzFk7vURyShOw'}
 
@@ -16,15 +17,16 @@ def get_url(star_url):
         print(url)
         r = requests.get(url, headers = hea)  
         sel = etree.HTML(r.text)
+        #time.sleep(1)
         #1   /html/body/div[8]/div[6]/div[4]/dl[1]/dd/p[1]/a
         #2   /html/body/div[8]/div[6]/div[4]/dl[2]/dd/p[1]/a
-        for date in sel.xpath('//body/div[8]/div[6]/div[4]/dl[position()<=30]'):   #  待修改为 for date in sel.xpath('//ul[@class="sojob-list"]/li[position()<=last()]'):
+        for date in sel.xpath('//body/div[8]/div[6]/div[4]/dl[position()<=1]'):   #  待修改为 for date in sel.xpath('//body/div[8]/div[6]/div[4]/dl[position()<=last()]'):
             try:
                 result = {}
                 sum = sum + 1 #计数
                 result['标题'] = date.xpath('.//dd/p[1]/a/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
-                result['网址'] = "http://office.gz.fang.com" + date.xpath('.//dd/p[1]/a/@href')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
-                print(result['网址'])
+                result['网址来源'] = "http://office.gz.fang.com" + date.xpath('.//dd/p[1]/a/@href')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
+                print(result['网址来源'])
                 result['写字楼'] = date.xpath('.//dd/p[2]/a/span/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
                 result['地址'] = date.xpath('.//dd/p[2]/span/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
                 result['面积'] = date.xpath('.//dd/div[2]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
@@ -33,7 +35,7 @@ def get_url(star_url):
                 result['区域'] = dict_y[key]
                 
                 #进入二级网页
-                url_1 = result['网址']   #进入二级网页
+                url_1 = result['网址来源']   #进入二级网页
                 r_1 = requests.get(url_1, headers = hea)  
                 sel_1 = etree.HTML(r_1.text)
                 result['电话'] = sel_1.xpath('//*[@id="mobilecode"]/text()')[0].replace('\n','').replace('\t','').replace('\r','').replace(' ','')
@@ -45,13 +47,14 @@ def get_url(star_url):
                 print('正在下载：'+ str(sum) + '、' + result['标题'] )
             except:
                 continue
-    print(list_total)
-    df = pd.DataFrame(list_total)    
-    print(df)
+#    print(list_total)
+    df = pd.DataFrame(list_total, columns=['标题', '写字楼', '区域','地址', '面积', '价格',  '联系人','电话', '网址来源'])    #,index=result['标题']
+#    df2 = df.reindex(columns=['标题', '写字楼', '区域','地址', '面积', '价格',  '联系人','电话', '网址来源'])  #重新排序
+#    print(df)
     df.to_csv('搜房网租金调查.csv')    #输出为liepin.csv文件
     print('******************爬虫结束啦******************')
 
-get_url(star_url)  #函数启动器
+get_url(star_url) #函数启动器
 
 
 
